@@ -17,7 +17,8 @@
 import {Vue, Component, axios} from '@/modules.js'
 import EmployeeForm from '@/components/EmployeeForm.vue'
 import EmployeeTable from '@/components/EmployeeTable.vue'
-const baseURL = 'dummy/'
+const baseURL = 'http://localhost:8081';
+
   //API Call
   async function ajaxGet(){
     try {
@@ -72,21 +73,10 @@ const baseURL = 'dummy/'
 
 export default class App extends Vue{
   //Data
-  employees = [
-    {
-      id: 100,
-      name: 'Yi Yang',
-      email: 'yyang26@ebay.com',
-    },
-    {
-      id: 101,
-      name: 'Drew Xin',
-      email: 'zxin@ebay.com',
-    },
-  ]
-
+  employees = []
+  
   //hooks
-  mouted(){
+  mounted(){
     this.getEmployees();
   }
 
@@ -98,7 +88,7 @@ export default class App extends Vue{
   //Methods
   async getEmployees(){
     try {
-      const response = await axios.get(baseURL + '/employees')
+      const response = await axios.get(baseURL + '/employees');
       this.employees = response.data;
     } catch (error) {
       console.error(error)
@@ -106,13 +96,8 @@ export default class App extends Vue{
   }
 
   async addEmployee(employee){
-    // update employee list data and id
-    // const lastID = this.employees.length > 0 ? this.employees[this.employees.length - 1].id : 0;
-    // const id = lastID + 1;
-    // const newEmployee = {...employee, id};
-    // this.employees = [...this.employees, newEmployee];
     try {
-      const response = await axios.post(baseURL + '/employees', {data:employees})
+      const response = await axios.post(baseURL + '/employees', employee)
       this.employees = [...this.employees, response.data] //this sould contain id info
     } catch (error) {
       console.error(error)
@@ -121,7 +106,7 @@ export default class App extends Vue{
 
   async deleteEmployee(id){
     try {
-      await axios.delete(baseURL + `employees/${id}`);
+      await axios.delete(baseURL + `/employees?id=${id}`);
       this.employees = this.employees.filter(employee => employee.id !== id);
     } catch (error) {
       console.error(error);
@@ -130,7 +115,7 @@ export default class App extends Vue{
 
   async editEmployee(id, updatedEmployee){
     try {
-      const response = await axios.put(baseURL + `employees/${id}`, {data:updatedEmployee});
+      const response = await axios.put(baseURL + `/employees?id=${id}`, updatedEmployee);
       this.employees = this.employees.map(employee => (employee.id === id ? response.data : employee))
     } catch (error) {
       console.error(error)
