@@ -29,3 +29,9 @@ GET /employees LIST all employees
 POST /employees CERATE employee by request body data
 DELETE /employees?id= REMOVE employee by id given by query
 PUT /employee?id= (PARTIAL) UPDATE employee found by ID with new data given by requested body data
+
+#Subject to Change: 
+1. Adopt VueX-class
+2. Adopt Vue-property-decorator
+3. Adopt Vue-model-decorator
+4. Change to typescript
