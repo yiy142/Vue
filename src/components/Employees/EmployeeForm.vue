@@ -27,17 +27,19 @@
     </div>
 </template>
 
-<script>
-import {Vue, Component, axios} from '@/modules.js'
+<script lang="ts">
+import { Vue, Component } from 'vue-property-decorator'
+import { State, Action } from 'vuex-class';
 
-@Component({
-    name: 'employee-form',
-    watch: {
-    }
-})
+interface EmployeeInput{
+    name: String,
+    email: String
+}
 
+@Component
 export default class EmployeeForm extends Vue{
-    employee = {
+    @Action addEmployee
+    employee:EmployeeInput = {
         name: '',
         email: ''
     }
@@ -45,10 +47,10 @@ export default class EmployeeForm extends Vue{
     invalidName = false;
     invalidEmail = false;
     handleSubmit(){
-        //TODO, update backend
         if (this.error === '' ){
-            this.$emit('add:employee', this.employee);
-            this.$refs.first.focus();
+            //this.$emit('add:employee', this.employee);
+            this.addEmployee({newVal: this.employee})
+            (this.$refs.first as HTMLElement).focus();
             this.submitted = true;
             this.employee = {name: '', email: ''};
         }

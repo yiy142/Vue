@@ -10,22 +10,6 @@ const PORT = 8081;
 const HOST = '0.0.0.0';
 var app = express()
 
-function makeMessage(req) {
-    return `${colors.blue(`[${req.method}]`)}`;
-}
-
-
-let data = [{
-    id: 100,
-    name: 'Yi Yang',
-    email: 'yyang26@ebay.com'
-  },
-  {
-    id: 101,
-    name: 'Drew Xin',
-    email: 'zxin@ebay.com'
-}];
-
 connectDB(2000, connection =>{
     app.use(bodyParser.json())
     app.use(cors());

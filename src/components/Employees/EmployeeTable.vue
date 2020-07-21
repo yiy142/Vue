@@ -40,20 +40,20 @@
   </div>
 </template>
 
-<script>
-import {Vue, Component, axios} from '@/modules.js'
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator'
+import {Employee} from '@/store/types'
 
-@Component({
-  props: {employees: Array},
-  name: 'employee-table'
-})
+@Component
 export default class EmployeeTable extends Vue{
-  editing = null;
-  cached = null;
-  editingEmp = null;
+  @Prop() readonly employees!: Array<Employee>
 
-  editMode(employee){
-    if (this.editing != null){
+  editing:Number = -1;
+  cached:Employee|null = null;
+  editingEmp:Employee|null = null;
+  
+  editMode(employee:Employee){
+    if (this.editing !== -1){
       if (confirm("Do you want to discard current edit? ")){
         Object.assign(this.editingEmp, this.cached);
       }
@@ -64,17 +64,17 @@ export default class EmployeeTable extends Vue{
     this.editingEmp = employee;
   }
 
-  editEmployee(employee){
+  editEmployee(employee:Employee){
     if (employee.name === '' || employee.email === '') return;
     this.$emit('edit:employee', employee.id, employee);
-    this.editing = null;
+    this.editing = -1;
     this.cached = null;
     this.editingEmp = null;
   }
 
-  cancelEdit(employee){
+  cancelEdit(employee:Employee){
     Object.assign(employee, this.cached);
-    this.editing = null;
+    this.editing = -1;
     this.cached = null;
     this.editingEmp = null;
   }

@@ -13,113 +13,26 @@
   </div>
 </template>
 
-<script>
-import {Vue, Component, axios} from '@/modules.js'
+<script lang = "ts">
 import EmployeeForm from '@/components/EmployeeForm.vue'
 import EmployeeTable from '@/components/EmployeeTable.vue'
-const baseURL = 'http://localhost:8081';
+import { Vue, Component } from 'vue-property-decorator';
+import { State, Action, Mutation } from 'vuex-class';
 
-  //API Call
-  async function ajaxGet(){
-    try {
-      const res = await axios.get(baseURL + '/employees');
-      this.employees = res.data;
-      console.log(res);
-    }
-    catch (error){
-      console.error(error);
-    }
-  }
-
-  async function ajaxPost(employee){
-    try{
-      const res = await axios.post(baseURL + '/employees', {data: employee});
-      console.log(res);
-    }
-    catch(error){
-      console.error(error);
-    }
-  }
-
-  async function ajaxDel(id){
-    try{
-      const res = await axios.delete(baseURL + '/employees', {data: id});
-      console.log(res);
-    }
-    catch(error){
-      console.error(error);
-    }
-  }
-
-  async function ajaxPut(employee){
-    try{
-      const res = await axios.put(baseURL + '/employees', {data: employee});
-      console.log(res);
-    }
-    catch(error){
-      console.error(error);
-    }
-  }
-
-
-@Component({
-  props: {},
-  watch: {},
-  components:{
-    EmployeeTable, 
-    EmployeeForm
-  }
-})
-
+@Component
 export default class App extends Vue{
-  //Data
-  employees = []
-  
+  @State employees:any
+  @Action addEmployee:any
+  @Action getEmployess:any
+
   //hooks
   mounted(){
-    this.getEmployees();
+    this.getEmployess();
   }
 
   //Computed
   get length(){
     return this.employees.length;
-  }
-
-  //Methods
-  async getEmployees(){
-    try {
-      const response = await axios.get(baseURL + '/employees');
-      this.employees = response.data;
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  async addEmployee(employee){
-    try {
-      const response = await axios.post(baseURL + '/employees', employee)
-      this.employees = [...this.employees, response.data] //this sould contain id info
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  async deleteEmployee(id){
-    try {
-      await axios.delete(baseURL + `/employees?id=${id}`);
-      this.employees = this.employees.filter(employee => employee.id !== id);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async editEmployee(id, updatedEmployee){
-    try {
-      const response = await axios.put(baseURL + `/employees?id=${id}`, updatedEmployee);
-      this.employees = this.employees.map(employee => (employee.id === id ? response.data : employee))
-    } catch (error) {
-      console.error(error)
-    }
   }
 }
 </script>
