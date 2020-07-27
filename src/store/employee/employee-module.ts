@@ -1,61 +1,60 @@
-import axios, { AxiosResponse } from 'axios'
-import { Employee } from '../types'
-import Service from '@/services'
-import {ActionContext } from 'vuex'
+import axios, { AxiosResponse } from 'axios';
+import { Employee } from '../types';
+import EmployeeService from '@/services/employees/EmployeeService';
+import { ActionContext } from 'vuex';
 
-interface State{
-  employees: Employee[]
+interface State {
+  employees: Employee[];
 }
-const state:State = {
-  employees: [],
-}
+const state: State = {
+  employees: []
+};
 
 const mutations = {
-  deleteById(state: State, id:Number){
-    state.employees = state.employees.filter(employee => employee.id !== id)
+  deleteById(state: State, id: number): void {
+    state.employees = state.employees.filter(employee => employee.id !== id);
   },
-  editById(state: State, payload: {id: Number, newVal: Employee}){
-    state.employees = state.employees.map(employee => (employee.id === payload.id ? payload.newVal : employee))
+  editById(state: State, payload: { id: number; newVal: Employee }): void {
+    state.employees = state.employees.map(employee => (employee.id === payload.id ? payload.newVal : employee));
   },
-  addEmployee(state:State, newVal: Employee){
-    state.employees = [...state.employees, newVal]
+  addEmployee(state: State, newVal: Employee): void {
+    state.employees = [...state.employees, newVal];
   },
-  receiveEmployees(state:State, employees:Employee[]){
-    state.employees = employees
+  receiveEmployees(state: State, employees: Employee[]): void {
+    state.employees = employees;
   }
-}
+};
 
 const actions = {
-  getEmployess(context:ActionContext<State, any>){
-    context.commit('receiveEmployees')
-    return Service.HTTP('/employees', "get", (status:Number, response:AxiosResponse)=>{
-      // Do something on resolve
-    }
-    ).catch(e=>{console.log(e)})
+  getEmployess(context: ActionContext<State, any>): any {
+    context.commit('receiveEmployees');
+    const res = EmployeeService.getEmployeesAjax().then((res: any) => {
+      context.commit('receiveEmployees', res);
+    });
   },
-  deleteEmployee(context: ActionContext<State, any>, id:Number){
-    context.commit('deleteById', id)
-    return Service.HTTP(`/employees?id=${id}`, "delete", (status: Number, resposne:AxiosResponse) =>{
-      // Do something on resolve
-    }).catch(e=>{console.log(e)})
+  deleteEmployee(context: ActionContext<State, any>, id: number): any {
+    context.commit('deleteById', id);
+    EmployeeService.deleteEmployeesAjax(id).then((res: any) => {
+      context.commit('deleteById');
+    });
   },
-  editEmployee(context:ActionContext<State,any>, payload:{id: Number, newVal:Employee}){
-    context.commit('editById', payload)
-    return Service.HTTP(`/employees?id=${payload.id}`, "delete", (status: Number, resposne:AxiosResponse) =>{
-      // Do something on resolve
-    }, payload.newVal).catch(e=>{console.log(e)})
+  editEmployee(context: ActionContext<State, any>, payload: { id: number; newVal: Employee }): any {
+    context.commit('editById', payload);
+    EmployeeService.putEmployeeAjax(payload.id, payload).then((res: any) => {
+      context.commit('editById', payload);
+    });
   },
-  addEmployee(context:ActionContext<State,any>, newVal:Employee){
-    context.commit('editById', newVal)
-    return Service.HTTP(`/employees`, "delete", (status: Number, resposne:AxiosResponse) =>{
-      // Do something on resolve
-    }, ).catch(e=>{console.log(e)})
+  addEmployee(context: ActionContext<State, any>, newVal: any | Employee): any {
+    context.commit('editById', newVal);
+    return EmployeeService.POST('/employees', newVal).then((res: any) => {
+      context.commit('addEmployee', newVal);
+    });
   }
-}
+};
 
 export default {
   namespaced: true,
   state: state,
-  mutations:mutations,
-  actions:actions
+  mutations: mutations,
+  actions: actions
 };

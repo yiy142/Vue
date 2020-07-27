@@ -1,11 +1,11 @@
 module.exports = {
   lintOnSave: true,
-    configureWebpack: {
-      resolve:{
-        alias:{
-          '@': __dirname + '/src'
-        }
-      },
-      watch: true
-    }
+  configureWebpack: {
+    resolve: {
+      alias: {
+        '@': __dirname + '/src'
+      }
+    },
+    watch: true
   }
+};
