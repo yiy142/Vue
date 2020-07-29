@@ -2,8 +2,8 @@ import Axios, { AxiosResponse, AxiosError, AxiosInstance, AxiosRequestConfig } f
 
 export default class BaseServiceClassService {
   // Common Service
-  protected static service: AxiosInstance;
-  static initialize(): void {
+  protected service: AxiosInstance;
+  constructor() {
     this.service = Axios.create({
       baseURL: 'http://localhost:8081',
       withCredentials: false,
@@ -15,11 +15,12 @@ export default class BaseServiceClassService {
     this.service.interceptors.response.use(this.onSuccess, this.onError);
   }
 
-  static onSuccess(response: AxiosResponse): any {
+  onSuccess(response: AxiosResponse): any {
     return response;
   }
 
-  static onError(error: any): any {
+  onError(error: any): any {
+    // collect some log
     switch (error.response.status) {
       case 401:
         // redirect to home page
@@ -34,16 +35,16 @@ export default class BaseServiceClassService {
     return Promise.reject(error);
   }
 
-  static GET(url: string): Promise<any> {
+  GET(url: string): Promise<any> {
     return this.service.get(url);
   }
-  static DELETE(url: string): Promise<any> {
+  DELETE(url: string): Promise<any> {
     return this.service.delete(url);
   }
-  static POST(url: string, payload: Record<string, unknown>): Promise<any> {
+  POST(url: string, payload: Record<string, unknown>): Promise<any> {
     return this.service.post(url, payload);
   }
-  static PUT(url: string, payload: Record<string, unknown>): Promise<any> {
+  PUT(url: string, payload: Record<string, unknown>): Promise<any> {
     return this.service.put(url, payload);
   }
 }

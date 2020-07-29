@@ -1,4 +1,3 @@
-import axios, { AxiosResponse } from 'axios';
 import { Employee } from '../types';
 import EmployeeService from '@/services/employees/EmployeeService';
 import { ActionContext } from 'vuex';
@@ -12,10 +11,12 @@ const state: State = {
 
 const mutations = {
   deleteById(state: State, id: number): void {
-    state.employees = state.employees.filter(employee => employee.id !== id);
+    state.employees = state.employees.filter((employee) => employee.id !== id);
   },
   editById(state: State, payload: { id: number; newVal: Employee }): void {
-    state.employees = state.employees.map(employee => (employee.id === payload.id ? payload.newVal : employee));
+    state.employees = state.employees.map((employee) =>
+      employee.id === payload.id ? payload.newVal : employee
+    );
   },
   addEmployee(state: State, newVal: Employee): void {
     state.employees = [...state.employees, newVal];
@@ -26,8 +27,9 @@ const mutations = {
 };
 
 const actions = {
-  getEmployess(context: ActionContext<State, any>): any {
-    context.commit('receiveEmployees');
+  getEmployees(context: ActionContext<State, any>): any {
+    //context.commit('receiveEmployees');
+    console.log(';123');
     const res = EmployeeService.getEmployeesAjax().then((res: any) => {
       context.commit('receiveEmployees', res);
     });
@@ -38,7 +40,10 @@ const actions = {
       context.commit('deleteById');
     });
   },
-  editEmployee(context: ActionContext<State, any>, payload: { id: number; newVal: Employee }): any {
+  editEmployee(
+    context: ActionContext<State, any>,
+    payload: { id: number; newVal: Employee }
+  ): any {
     context.commit('editById', payload);
     EmployeeService.putEmployeeAjax(payload.id, payload).then((res: any) => {
       context.commit('editById', payload);

@@ -1,15 +1,14 @@
-'use strict';
-import express from 'express';
-import cors from 'cors';
-import bodyParser from 'body-parser';
-import connectDB from './connection';
-import { Employee } from './models/Employee.model';
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const connectDB = require('./connection').default;
+const Employee = require('./models/Employee.model');
 
 const PORT = 8081;
 const HOST = '0.0.0.0';
 const app = express();
 
-connectDB(2000, connection => {
+function serve() {
   app.use(bodyParser.json());
   app.use(cors());
 
@@ -38,8 +37,12 @@ connectDB(2000, connection => {
               res.status(500).send(err);
             } else {
               let newId = result.id + 1;
-              const newEmployee = new Employee({ ...req.body, deleted: false, id: newId });
-              newEmployee.save(err => {
+              const newEmployee = new Employee({
+                ...req.body,
+                deleted: false,
+                id: newId
+              });
+              newEmployee.save((err) => {
                 if (err) return res.status(500).send(err);
                 return res.status(200).send(newEmployee);
               });
@@ -47,8 +50,12 @@ connectDB(2000, connection => {
           });
       } else {
         let newId = 1;
-        const newEmployee = new Employee({ ...req.body, deleted: false, id: newId });
-        newEmployee.save(err => {
+        const newEmployee = new Employee({
+          ...req.body,
+          deleted: false,
+          id: newId
+        });
+        newEmployee.save((err) => {
           if (err) console.error(res.status(500).send(err));
           return res.status(200).send(newEmployee);
         });
@@ -69,12 +76,19 @@ connectDB(2000, connection => {
   });
 
   app.put('/employees', (req, res) => {
-    Employee.findOneAndUpdate({ id: req.query.id }, req.body, { new: true }, (err, employee) => {
-      if (err) return res.status(500).send(err);
-      res.send(employee);
-    });
+    Employee.findOneAndUpdate(
+      { id: req.query.id },
+      req.body,
+      { new: true },
+      (err, employee) => {
+        if (err) return res.status(500).send(err);
+        res.send(employee);
+      }
+    );
   });
 
   app.listen(PORT, HOST);
   console.log(`running at http://localhost:` + PORT);
-});
+}
+
+connectDB(2000, serve);

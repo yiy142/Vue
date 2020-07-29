@@ -14,24 +14,28 @@
 </template>
 
 <script lang="ts">
-import EmployeeForm from '@/components/EmployeeForm.vue';
-import EmployeeTable from '@/components/EmployeeTable.vue';
+import EmployeeForm from '@/components/Employees/EmployeeForm.vue';
+import EmployeeTable from '@/components/Employees/EmployeeTable.vue';
 import { Vue, Component } from 'vue-property-decorator';
-import { State, Action, Mutation } from 'vuex-class';
+import { State, Getter, Action, Mutation, namespace } from 'vuex-class';
 
-@Component
+const employees = namespace('employees');
+@Component({
+  components: {
+    EmployeeForm,
+    EmployeeTable
+  }
+})
 export default class App extends Vue {
   @State employees: any;
   @Action addEmployee: any;
-  @Action getEmployess: any;
-  @Action('deleteEmployee') delete: any;
+  @employees.Action getEmployees: any;
+  @Action deleteEmployee: any;
+  @Action editEmployee: any;
 
-  //hooks
   mounted(): void {
-    this.getEmployess();
+    this.getEmployees();
   }
-
-  //Computed
   get length(): number {
     return this.employees.length;
   }
