@@ -4,16 +4,16 @@ class EmployeeService extends BaseServiceClass {
   constructor() {
     super();
   }
-  getEmployeesAjax(payload?: Record<string, unknown>): any {
+  getEmployeesAjax(): any {
     return this.GET(`/employees`);
   }
-  deleteEmployeesAjax(id: number, payload?: Record<string, unknown>): any {
+  deleteEmployeesAjax(id: number): any {
     return this.DELETE(`/employees?id=${id}`);
   }
-  addEmployeeAjax(payload: Record<string, unknown>): any {
+  addEmployeeAjax(payload: any): any {
     return this.POST(`/employees`, payload);
   }
-  putEmployeeAjax(id: number, payload: Record<string, unknown>): any {
+  putEmployeeAjax(id: number, payload: any): any {
     return this.PUT(`/employees?id=${id}`, payload);
   }
 }

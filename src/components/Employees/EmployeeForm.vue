@@ -31,7 +31,6 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import { State, Action } from 'vuex-class';
 
 interface EmployeeInput {
   name: string;
@@ -40,7 +39,6 @@ interface EmployeeInput {
 
 @Component
 export default class EmployeeForm extends Vue {
-  @Action addEmployee: any;
   employee: EmployeeInput = {
     name: '',
     email: ''
@@ -48,27 +46,33 @@ export default class EmployeeForm extends Vue {
   submitted = false;
   invalidName = false;
   invalidEmail = false;
-  handleSubmit() {
-    if (this.error === '') {
-      //this.$emit('add:employee', this.employee);
-      this.addEmployee({ newVal: this.employee })(this.$refs.first as HTMLElement).focus();
+  handleSubmit(): void {
+    if (this.error == '') {
+      this.$emit('add:employee', this.employee);
+      (this.$refs.first as HTMLElement).focus();
       this.submitted = true;
       this.employee = { name: '', email: '' };
     } else alert('invalid input');
   }
 
-  clearStatus() {
+  clearStatus(): void {
     this.submitted = false;
   }
 
-  get error() {
+  get error(): string {
     if (this.employee.name === '' && this.employee.email === '') return '';
-    if (this.employee.name.indexOf(' ') == -1 || this.employee.name.indexOf(' ') == this.employee.name.length - 1) {
+    if (
+      this.employee.name.indexOf(' ') == -1 ||
+      this.employee.name.indexOf(' ') == this.employee.name.length - 1
+    ) {
       this.invalidName = true;
       return 'Please provide full name, seperated by space';
     }
     this.invalidName = false;
-    if (this.employee.email.indexOf('@') == -1 || this.employee.email.indexOf('@') == this.employee.email.length - 1) {
+    if (
+      this.employee.email.indexOf('@') == -1 ||
+      this.employee.email.indexOf('@') == this.employee.email.length - 1
+    ) {
       this.invalidEmail = true;
       return 'Please provide valid email address';
     }

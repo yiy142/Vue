@@ -77,8 +77,8 @@ function serve() {
 
   app.put('/employees', (req, res) => {
     Employee.findOneAndUpdate(
-      { id: req.query.id },
-      req.body,
+      { id: req.body.id },
+      req.body.newVal,
       { new: true },
       (err, employee) => {
         if (err) return res.status(500).send(err);

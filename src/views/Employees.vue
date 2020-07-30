@@ -27,11 +27,11 @@ const employees = namespace('employees');
   }
 })
 export default class App extends Vue {
-  @State employees: any;
-  @Action addEmployee: any;
+  @employees.State employees: any;
+  @employees.Action addEmployee: any;
   @employees.Action getEmployees: any;
-  @Action deleteEmployee: any;
-  @Action editEmployee: any;
+  @employees.Action deleteEmployee: any;
+  @employees.Action editEmployee: any;
 
   mounted(): void {
     this.getEmployees();

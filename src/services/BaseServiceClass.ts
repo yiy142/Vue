@@ -1,4 +1,4 @@
-import Axios, { AxiosResponse, AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
+import Axios, { AxiosResponse, AxiosInstance } from 'axios';
 
 export default class BaseServiceClassService {
   // Common Service
@@ -21,7 +21,7 @@ export default class BaseServiceClassService {
 
   onError(error: any): any {
     // collect some log
-    switch (error.response.status) {
+    switch (error.response?.status) {
       case 401:
         // redirect to home page
         break;
@@ -32,6 +32,8 @@ export default class BaseServiceClassService {
         //redirect to /500
         break;
     }
+    alert(error);
+    console.dir(error);
     return Promise.reject(error);
   }
 

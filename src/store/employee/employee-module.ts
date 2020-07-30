@@ -27,32 +27,36 @@ const mutations = {
 };
 
 const actions = {
-  getEmployees(context: ActionContext<State, any>): any {
+  getEmployees(context: ActionContext<State, unknown>): any {
     //context.commit('receiveEmployees');
-    console.log(';123');
-    const res = EmployeeService.getEmployeesAjax().then((res: any) => {
-      context.commit('receiveEmployees', res);
-    });
+    EmployeeService.getEmployeesAjax()
+      .then((res: any) => {
+        context.commit('receiveEmployees', res.data);
+      })
+      .catch((error: any) => {
+        console.log(error);
+        context.commit('receiveEmployees', []);
+      });
   },
-  deleteEmployee(context: ActionContext<State, any>, id: number): any {
-    context.commit('deleteById', id);
-    EmployeeService.deleteEmployeesAjax(id).then((res: any) => {
-      context.commit('deleteById');
+  deleteEmployee(context: ActionContext<State, unknown>, id: number): any {
+    EmployeeService.deleteEmployeesAjax(id).then(() => {
+      context.dispatch('getEmployees');
     });
   },
   editEmployee(
-    context: ActionContext<State, any>,
+    context: ActionContext<State, unknown>,
     payload: { id: number; newVal: Employee }
   ): any {
-    context.commit('editById', payload);
-    EmployeeService.putEmployeeAjax(payload.id, payload).then((res: any) => {
-      context.commit('editById', payload);
+    EmployeeService.putEmployeeAjax(payload.id, payload).then(() => {
+      context.dispatch('getEmployees');
     });
   },
-  addEmployee(context: ActionContext<State, any>, newVal: any | Employee): any {
-    context.commit('editById', newVal);
-    return EmployeeService.POST('/employees', newVal).then((res: any) => {
-      context.commit('addEmployee', newVal);
+  addEmployee(
+    context: ActionContext<State, unknown>,
+    newVal: any | Employee
+  ): any {
+    EmployeeService.POST('/employees', newVal).then(() => {
+      context.dispatch('getEmployees');
     });
   }
 };

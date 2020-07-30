@@ -36,7 +36,10 @@
             <button @click="editMode(employee)" class="muted-button">
               Edit
             </button>
-            <button @click="$emit('delete:employee', employee.id)" class="muted-button">
+            <button
+              @click="$emit('delete:employee', employee.id)"
+              class="muted-button"
+            >
               Delete
             </button>
           </td>
@@ -47,18 +50,21 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component } from 'vue-property-decorator';
 import { Employee } from '@/store/types';
+import { State, namespace } from 'vuex-class';
+
+const employees = namespace('employees');
 
 @Component
 export default class EmployeeTable extends Vue {
-  @Prop() readonly employees!: Array<Employee>;
+  @employees.State employees: any;
 
   editing = -1;
   cached: Employee | null = null;
   editingEmp: Employee | null = null;
 
-  editMode(employee: Employee) {
+  editMode(employee: Employee): void {
     if (this.editing !== -1) {
       if (confirm('Do you want to discard current edit? ')) {
         Object.assign(this.editingEmp, this.cached);
@@ -71,15 +77,17 @@ export default class EmployeeTable extends Vue {
     this.editingEmp = employee;
   }
 
-  editEmployee(employee: Employee) {
+  editEmployee(employee: Employee): void {
     if (employee.name === '' || employee.email === '') return;
-    this.$emit('edit:employee', employee.id, employee);
+    this.$emit('edit:employee', { id: employee.id, newVal: employee });
+    //this.$emit('edit:employee', employee.id, employee);
+
     this.editing = -1;
     this.cached = null;
     this.editingEmp = null;
   }
 
-  cancelEdit(employee: Employee) {
+  cancelEdit(employee: Employee): void {
     Object.assign(employee, this.cached);
     this.editing = -1;
     this.cached = null;
