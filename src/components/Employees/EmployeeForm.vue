@@ -1,31 +1,18 @@
 <template>
   <div id="employee-form">
-    <form @submit.prevent="handleSubmit">
-      <label for="ename"> Employee Name </label>
-      <input
-        id="ename"
-        type="text"
-        v-model="employee.name"
-        @focus="clearStatus"
-        @keypress="clearStatus"
-        :class="{ 'has-error': invalidName }"
-        ref="first"
-      />
-      <label for="eEmail"> Employee Email </label>
-      <input
-        id="eEmail"
-        type="text"
-        v-model="employee.email"
-        @focus="clearStatus"
-        @keypress="clearStatus"
-        :class="{ 'has-error': invalidEmail }"
-      />
-      <p v-if="!submitted && error !== ''" class="error-message">{{ error }}</p>
-      <p v-if="submitted" class="success-message">
-        Employee Successfully Added
-      </p>
-      <input type="submit" value="Add Employee" />
-    </form>
+    <div style="margin: 20px;"></div>
+    <el-form :label-position="top" :model="employee" :rules="rules" ref="form">
+      <el-form-item label="Employee Name">
+        <el-input v-model="employee.name"></el-input>
+      </el-form-item>
+      <el-form-item label="Employee Email">
+        <el-input v-model="employee.email"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="submitForm('form')">Submit</el-button>
+        <el-button @click="resetForm('form')">Reset</el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
@@ -46,38 +33,65 @@ export default class EmployeeForm extends Vue {
   submitted = false;
   invalidName = false;
   invalidEmail = false;
-  handleSubmit(): void {
-    if (this.error == '') {
-      this.$emit('add:employee', this.employee);
-      (this.$refs.first as HTMLElement).focus();
-      this.submitted = true;
-      this.employee = { name: '', email: '' };
-    } else alert('invalid input');
-  }
-
-  clearStatus(): void {
-    this.submitted = false;
-  }
-
-  get error(): string {
-    if (this.employee.name === '' && this.employee.email === '') return '';
+  rules = {
+    name: [
+      {
+        validator: this.validateName,
+        trigger: 'change'
+      }
+    ],
+    email: [
+      {
+        validator: this.validateEmail,
+        trigger: 'change'
+      }
+    ]
+  };
+  validateName(rule: any, value: any, callback: any) {
+    if (!value) {
+      return callback(new Error('Name Cannot Be Empty'));
+    }
     if (
       this.employee.name.indexOf(' ') == -1 ||
       this.employee.name.indexOf(' ') == this.employee.name.length - 1
     ) {
       this.invalidName = true;
-      return 'Please provide full name, seperated by space';
+      return callback(
+        new Error('Please provide full name, seperated by space')
+      );
     }
-    this.invalidName = false;
+    return callback();
+  }
+
+  validateEmail(rule: any, value: any, callback: any) {
+    if (!value) {
+      return callback(new Error('Email Cannot Be Empty'));
+    }
     if (
       this.employee.email.indexOf('@') == -1 ||
       this.employee.email.indexOf('@') == this.employee.email.length - 1
     ) {
       this.invalidEmail = true;
-      return 'Please provide valid email address';
+      return callback(new Error('Please provide valid email address'));
     }
     this.invalidEmail = false;
-    return '';
+    return callback();
+  }
+
+  handleSubmit(formName: string): void {
+    (this.$refs[formName] as any).validate((valid: any) => {
+      if (valid) {
+        this.$emit('add:employee', this.employee);
+        (this.$refs.first as HTMLElement).focus();
+        this.resetForm(formName);
+      } else {
+        this.$alert('invalid input');
+      }
+    });
+  }
+
+  resetForm(formName: any) {
+    (this.$refs[formName] as any).resetFields();
   }
 }
 </script>
