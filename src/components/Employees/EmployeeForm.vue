@@ -1,15 +1,23 @@
 <template>
   <div id="employee-form">
     <div style="margin: 20px;"></div>
-    <el-form :label-position="top" :model="employee" :rules="rules" ref="form">
-      <el-form-item label="Employee Name">
-        <el-input v-model="employee.name"></el-input>
+    <el-form
+      label-position="top"
+      status-icon
+      :model="employee"
+      :rules="rules"
+      ref="form"
+    >
+      <el-form-item label="Employee Name" prop="name">
+        <el-input ref="first" v-model="employee.name"></el-input>
       </el-form-item>
-      <el-form-item label="Employee Email">
+      <el-form-item label="Employee Email" prop="email">
         <el-input v-model="employee.email"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('form')">Submit</el-button>
+        <el-button type="primary" @click="handleSubmit('form')"
+          >Submit</el-button
+        >
         <el-button @click="resetForm('form')">Reset</el-button>
       </el-form-item>
     </el-form>
@@ -19,14 +27,9 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 
-interface EmployeeInput {
-  name: string;
-  email: string;
-}
-
 @Component
 export default class EmployeeForm extends Vue {
-  employee: EmployeeInput = {
+  employee: { name: string; email: string } = {
     name: '',
     email: ''
   };
@@ -82,8 +85,8 @@ export default class EmployeeForm extends Vue {
     (this.$refs[formName] as any).validate((valid: any) => {
       if (valid) {
         this.$emit('add:employee', this.employee);
-        (this.$refs.first as HTMLElement).focus();
         this.resetForm(formName);
+        (this.$refs.first as HTMLElement).focus();
       } else {
         this.$alert('invalid input');
       }
@@ -96,15 +99,9 @@ export default class EmployeeForm extends Vue {
 }
 </script>
 
-<style scoped>
-form {
-  margin-bottom: 2rem;
-}
-.error-message {
-  color: #d33c40;
-}
-
-.success-message {
-  color: #32a95d;
+<style>
+label.el-form-item__label {
+  margin-bottom: 0px;
+  padding-bottom: 0px !important;
 }
 </style>

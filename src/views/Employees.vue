@@ -50,5 +50,6 @@ button {
 
 .small-container {
   max-width: 780px;
+  margin: auto;
 }
 </style>
