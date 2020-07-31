@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-
+import { validateEmail } from '@/utils/validate';
 @Component
 export default class EmployeeForm extends Vue {
   employee: { name: string; email: string } = {
@@ -70,10 +70,7 @@ export default class EmployeeForm extends Vue {
     if (!value) {
       return callback(new Error('Email Cannot Be Empty'));
     }
-    if (
-      this.employee.email.indexOf('@') == -1 ||
-      this.employee.email.indexOf('@') == this.employee.email.length - 1
-    ) {
+    if (!validateEmail(value)) {
       this.invalidEmail = true;
       return callback(new Error('Please provide valid email address'));
     }

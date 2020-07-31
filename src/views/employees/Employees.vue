@@ -17,7 +17,7 @@
 import EmployeeForm from '@/components/Employees/EmployeeForm.vue';
 import EmployeeTable from '@/components/Employees/EmployeeTable.vue';
 import { Vue, Component } from 'vue-property-decorator';
-import { State, Getter, Action, Mutation, namespace } from 'vuex-class';
+import { State, Action, namespace } from 'vuex-class';
 
 const employees = namespace('employees');
 @Component({
