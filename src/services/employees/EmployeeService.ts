@@ -5,16 +5,31 @@ class EmployeeService extends BaseServiceClass {
     super();
   }
   getEmployeesAjax(): any {
-    return this.GET(`/employees`);
+    return this.service({
+      url: `/employees`,
+      method: 'get'
+    });
   }
   deleteEmployeesAjax(id: number): any {
-    return this.DELETE(`/employees?id=${id}`);
+    return this.service({
+      url: `/employees?id=${id}`,
+      method: 'delete'
+    });
   }
+
   addEmployeeAjax(payload: any): any {
-    return this.POST(`/employees`, payload);
+    return this.service({
+      url: `/employees`,
+      method: 'post',
+      data: payload
+    });
   }
   putEmployeeAjax(id: number, payload: any): any {
-    return this.PUT(`/employees?id=${id}`, payload);
+    return this.service({
+      url: `/employees?id=${id}`,
+      method: 'put',
+      data: payload
+    });
   }
 }
 

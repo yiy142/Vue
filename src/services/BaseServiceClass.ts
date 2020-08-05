@@ -10,7 +10,8 @@ export default class BaseServiceClassService {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
-      }
+      },
+      timeout: 5000
     });
     this.service.interceptors.response.use(this.onSuccess, this.onError);
   }
@@ -32,21 +33,6 @@ export default class BaseServiceClassService {
         //redirect to /500
         break;
     }
-    alert(error);
-    console.dir(error);
     return Promise.reject(error);
-  }
-
-  GET(url: string): Promise<any> {
-    return this.service.get(url);
-  }
-  DELETE(url: string): Promise<any> {
-    return this.service.delete(url);
-  }
-  POST(url: string, payload: Record<string, unknown>): Promise<any> {
-    return this.service.post(url, payload);
-  }
-  PUT(url: string, payload: Record<string, unknown>): Promise<any> {
-    return this.service.put(url, payload);
   }
 }

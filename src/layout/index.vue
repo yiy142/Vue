@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import RightPanel from '@/components/RightPanel';
+// import RightPanel from '@/components/RightPanel';
 import { AppMain, Navbar, Settings, Sidebar, TagsView } from './components';
 import { Vue, Component } from 'vue-property-decorator';
 import { State } from 'vuex-class';
@@ -24,7 +24,7 @@ import { State } from 'vuex-class';
   components: {
     AppMain,
     Navbar,
-    RightPanel,
+    // RightPanel,
     Settings,
     Sidebar,
     TagsView
@@ -40,8 +40,7 @@ export default class Layout extends Vue {
     return {
       hideSidebar: !this.sidebar.opened,
       openSidebar: this.sidebar.opened,
-      withoutAnimation: this.sidebar.withoutAnimation,
-      mobile: this.device === 'mobile'
+      withoutAnimation: this.sidebar.withoutAnimation
     };
   }
 

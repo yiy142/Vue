@@ -3,7 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const connectDB = require('./connection').default;
 const Employee = require('./models/Employee.model');
-
+const User = require('./models/User.model');
 const PORT = 8081;
 const HOST = '0.0.0.0';
 const app = express();
@@ -22,7 +22,7 @@ function serve() {
         res.status(200).json(result);
       }
     });
-    res.status(100);
+    res.status(100).send();
   });
 
   app.post('/employees', (req, res) => {
@@ -85,6 +85,54 @@ function serve() {
         res.send(employee);
       }
     );
+  });
+
+  app.post('/user/login', async (req, res) => {
+    const data = req.body;
+    console.log(data);
+    const matchedUsers = await User.find({ username: data.username });
+    console.log(matchedUsers);
+    if (matchedUsers.length == 1) {
+      let find = matchedUsers[0];
+      if (find.password === data.password) {
+        return res.status(200).json({
+          token: 'DUMMYTOKEN'
+        });
+      } else {
+        return res.status(401).send({ message: 'Wrong Password' });
+      }
+    } else if (matchedUsers.length === 0) {
+      res.status(500).send({ message: 'username does not exist' });
+    } else {
+      res
+        .status(500)
+        .send({ message: 'duplicate username error, blame dev team' });
+    }
+  });
+
+  app.post('/user/register', (req, res) => {
+    const newUser = new User({
+      username: req.body.username,
+      password: req.body.password
+    });
+    newUser.save();
+    res.status(200).send();
+  });
+
+  app.get('/user', (req, res) => {
+    User.find().exec((err, result) => {
+      if (err) {
+      } else {
+        console.log(result);
+        res.status(200).json(result);
+      }
+    });
+  });
+
+  app.delete('/user', (req, res) => {
+    User.remove({}, () => {
+      res.send();
+    });
   });
 
   app.listen(PORT, HOST);

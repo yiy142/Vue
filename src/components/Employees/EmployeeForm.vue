@@ -27,15 +27,14 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import { validateEmail } from '@/utils/validate';
+
 @Component
 export default class EmployeeForm extends Vue {
   employee: { name: string; email: string } = {
     name: '',
     email: ''
   };
-  submitted = false;
-  invalidName = false;
-  invalidEmail = false;
+
   rules = {
     name: [
       {
@@ -50,6 +49,7 @@ export default class EmployeeForm extends Vue {
       }
     ]
   };
+
   validateName(rule: any, value: any, callback: any) {
     if (!value) {
       return callback(new Error('Name Cannot Be Empty'));
@@ -58,7 +58,6 @@ export default class EmployeeForm extends Vue {
       this.employee.name.indexOf(' ') == -1 ||
       this.employee.name.indexOf(' ') == this.employee.name.length - 1
     ) {
-      this.invalidName = true;
       return callback(
         new Error('Please provide full name, seperated by space')
       );
@@ -71,17 +70,15 @@ export default class EmployeeForm extends Vue {
       return callback(new Error('Email Cannot Be Empty'));
     }
     if (!validateEmail(value)) {
-      this.invalidEmail = true;
       return callback(new Error('Please provide valid email address'));
     }
-    this.invalidEmail = false;
     return callback();
   }
 
   handleSubmit(formName: string): void {
     (this.$refs[formName] as any).validate((valid: any) => {
       if (valid) {
-        this.$emit('add:employee', this.employee);
+        this.$emit('add:employee', Object.assign({}, this.employee));
         this.resetForm(formName);
         (this.$refs.first as HTMLElement).focus();
       } else {

@@ -71,8 +71,13 @@
 <script lang="ts">
 import { validUsername } from '@/utils/validate';
 import { Vue, Component, Watch } from 'vue-property-decorator';
+import { Action, namespace } from 'vuex-class';
+const users = namespace('users');
+
 @Component
 export default class Login extends Vue {
+  @users.Action login: any;
+
   loginForm: { username: string; password: string } = {
     username: 'admin',
     password: '111111'
@@ -108,7 +113,8 @@ export default class Login extends Vue {
     ]
   };
 
-  @Watch(this.$router) function(route) {
+  @Watch('$route', { immediate: true })
+  onRoutChange(route) {
     const query = route.query;
     if (query) {
       this.redirect = query.redirect;
@@ -116,9 +122,7 @@ export default class Login extends Vue {
     }
   }
 
-  created() {
-    // window.addEventListener('storage', this.afterQRScan)
-  }
+  created() {}
   mounted() {
     if (this.loginForm.username === '') {
       (this.$refs.username as HTMLElement).focus();
@@ -142,28 +146,31 @@ export default class Login extends Vue {
       (this.$refs.password as HTMLElement).focus();
     });
   }
+
   handleLogin() {
     (this.$refs.loginForm as any).validate((valid) => {
       if (valid) {
         this.loading = true;
-        this.$store
-          .dispatch('user/login', this.loginForm)
+        this.login(this.loginForm)
           .then(() => {
             this.$router.push({
               path: this.redirect || '/',
               query: this.otherQuery
             });
-            this.loading = false;
           })
-          .catch(() => {
+          .catch((err) => {
+            this.$alert(err.response.data.message);
+          })
+          .finally(() => {
             this.loading = false;
           });
       } else {
-        console.log('error submit!!');
+        console.log('Validation Failed');
         return false;
       }
     });
   }
+
   getOtherQuery(query) {
     return Object.keys(query).reduce((acc, cur) => {
       if (cur !== 'redirect') {
@@ -176,18 +183,9 @@ export default class Login extends Vue {
 </script>
 
 <style lang="scss">
-/* 修复input 背景不协调 和光标变色 */
-/* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
-
 $bg: #283443;
 $light_gray: #fff;
 $cursor: #fff;
-
-@supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container .el-input input {
-    color: $cursor;
-  }
-}
 
 /* reset element-ui css */
 .login-container {

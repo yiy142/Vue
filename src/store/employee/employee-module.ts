@@ -55,7 +55,7 @@ const actions = {
     context: ActionContext<State, unknown>,
     newVal: any | Employee
   ): any {
-    EmployeeService.POST('/employees', newVal).then(() => {
+    return EmployeeService.addEmployeeAjax(newVal).then(() => {
       context.dispatch('getEmployees');
     });
   }
